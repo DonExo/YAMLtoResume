@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CV Builder</title>
+<title>CV Builder - YAMLtoResume</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 <style>
   :root {
     --bg:       #0f1117;
@@ -154,22 +156,22 @@
     overflow: hidden;
     position: relative;
   }
-  textarea {
-    width: 100%;
+  /* ── CodeMirror overrides ───────────────────────────────────── */
+  .CodeMirror {
     height: 100%;
-    background: var(--bg);
-    color: var(--text);
     font-family: var(--mono);
     font-size: 12.5px;
     line-height: 1.7;
-    padding: 20px 24px;
-    border: none;
-    outline: none;
-    resize: none;
-    tab-size: 2;
-    caret-color: var(--accent2);
+    background: transparent;   /* dracula theme sets its own bg */
   }
-  textarea::selection { background: #2563eb44; }
+  /* Make the dracula bg fill the entire pane */
+  .editor-wrap .CodeMirror { background: #282a36; }
+  .CodeMirror-scroll { padding: 12px 16px; }
+  .CodeMirror-cursor { border-left-color: var(--accent2) !important; }
+  .CodeMirror-selected { background: #2563eb44 !important; }
+  .CodeMirror-activeline-background { background: #ffffff08 !important; }
+  .CodeMirror-gutters { background: #282a36; border-right: 1px solid var(--border); }
+  .CodeMirror-linenumber { color: #555970; }
 
   /* ── Sidebar ────────────────────────────────────────────────── */
   .sidebar {
@@ -228,6 +230,7 @@
   }
   .shortcut-row:last-child { border-bottom: none; }
   .shortcut-row span { color: var(--text); font-size: 11.5px; }
+  .shortcut-row .keys { display: flex; gap: 4px; align-items: center; }
   kbd {
     display: inline-flex;
     align-items: center;
@@ -308,7 +311,7 @@
 
   <!-- Topbar -->
   <header class="topbar">
-    <div class="topbar-logo">cv-builder <span>/</span> yaml</div>
+    <div class="topbar-logo">cv-builder <span>/</span> YAMLtoResume</div>
     <div class="topbar-spacer"></div>
     <div class="status-pill" id="status-pill">
       <div class="status-dot"></div>
@@ -323,10 +326,10 @@
     <div class="editor-pane">
       <div class="editor-toolbar">
         <strong>cv_data.yaml</strong>
-        — edit directly, then hit "Download PDF"
+        — edit directly, then click "Download PDF"
       </div>
       <div class="editor-wrap">
-        <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+        <textarea id="editor"></textarea>
       </div>
       <div id="error-banner"></div>
     </div>
@@ -345,27 +348,9 @@
 
       <div class="sidebar-section">
         <div class="sidebar-title">Keyboard shortcuts</div>
-        <div class="shortcut-row">
-          <span>Save</span>  
-            <div class="shortcut-keys">
-              <kbd>⌘</kbd>
-              <kbd>S</kbd>
-            </div>
-        </div>
-        <div class="shortcut-row">
-          <span>Generate PDF</span> 
-            <div class="shortcut-keys">
-              <kbd>⌘</kbd>
-              <kbd>⏎</kbd>
-            </div>
-        </div>
-        <div class="shortcut-row">
-          <span>Validate YAML</span> 
-            <div class="shortcut-keys">
-              <kbd>⌘</kbd>
-              <kbd>K</kbd>
-            </div>
-        </div>
+        <div class="shortcut-row"><span>Save</span> <div class="keys"><kbd>⌘</kbd><kbd>S</kbd></div></div>
+        <div class="shortcut-row"><span>Generate PDF</span> <div class="keys"><kbd>⌘</kbd><kbd>⏎</kbd></div></div>
+        <div class="shortcut-row"><span>Validate YAML</span> <div class="keys"><kbd>⌘</kbd><kbd>K</kbd></div></div>
       </div>
 
     </aside>
@@ -374,8 +359,38 @@
 
 <div id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/yaml/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
 <script>
-  const editor    = document.getElementById('editor');
+  // ── CodeMirror instance ───────────────────────────────────────
+  const cm = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    mode:            'yaml',
+    theme:           'dracula',
+    lineNumbers:     true,
+    styleActiveLine: true,
+    matchBrackets:   true,
+    indentUnit:      2,
+    tabSize:         2,
+    indentWithTabs:  false,
+    lineWrapping:    false,
+    extraKeys: {
+      'Tab': cm => cm.execCommand('indentMore'),
+      'Shift-Tab': cm => cm.execCommand('indentLess'),
+    },
+  });
+  cm.setSize('100%', '100%');
+
+  // Shim so all existing code using editor.value still works
+  const editor = {
+    get value()      { return cm.getValue(); },
+    set value(v)     { cm.setValue(v); },
+    addEventListener(ev, fn) {
+      if (ev === 'input') cm.on('change', fn);
+      // keydown is handled via extraKeys above; ignore other events
+    },
+  };
   const btnGen    = document.getElementById('btn-generate');
   const statusPill= document.getElementById('status-pill');
   const statusTxt = document.getElementById('status-text');
@@ -531,16 +546,7 @@
     }
   });
 
-  // ── Tab key support ───────────────────────────────────────────
-  editor.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const s = editor.selectionStart;
-      const v = editor.value;
-      editor.value = v.slice(0, s) + '  ' + v.slice(editor.selectionEnd);
-      editor.selectionStart = editor.selectionEnd = s + 2;
-    }
-  });
+  // Tab handling is done via CodeMirror extraKeys above
 
   // ── Init ──────────────────────────────────────────────────────
   loadData();

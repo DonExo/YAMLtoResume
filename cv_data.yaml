@@ -1,71 +1,73 @@
 # ─────────────────────────────────────────────
-#  CV DATA  —  edit freely, then hit "Generate"
+#  CV DATA SAMPLE — edit directly, then click "Download PDF" 
 # ─────────────────────────────────────────────
 
 meta:
-  output_filename: Donald_Dimitriovski_CV_2026.pdf
-  pdf_title: " "
+  pdf_title: Jane Doe CV
+  output_filename: Jane_Doe_CV.pdf
 
 header:
-  name: Donald Dimitriovski
-  role: Senior Backend Engineer · Python / Django · Remote
-  photo: static/photo.png
-  contact_line1: "✉ hiring@dimitriovski.com  ·  ✆ (+389) 78411195  ·  ◎ Skopje, North Macedonia"
-  contact_line2: "linkedin.com/in/donalddimitriovski  ·  github.com/DonExo"
+  name: Jane Doe
+  role: Senior Backend Engineer · Python · Remote
+  photo: static/default.png
+  contact_line1: "✉ jane@example.com  ·  ✆ (+1) 234 567 890  ·  ⚑ San Francisco, USA"
+  contact_line2: "in linkedin.com/in/janedoe  ·  ⌥ github.com/janedoe"
 
 profile: >
-  Backend engineer specialising in healthcare and fintech systems, with a focus on security-critical Python services and search infrastructure.
-  Known for tackling complex architecture challenges, measurable performance improvements,
-  and business-oriented approach.
+  Backend-focused senior engineer with 8+ years of experience building scalable Python/Django
+  systems. Known for tackling complex architecture challenges, measurable performance improvements,
+  and leading cross-functional teams. Combines a security-first mindset with a pragmatic,
+  business-oriented approach.
 
 experience:
-  - company: "Senior Backend Engineer · Nordhealth (Finland) — Remote / Contract"
-    period: "Mar 2025 – Present"
-    highlight: "Introduced 2FA (Email/TOTP/FIDO) and HaveIBeenPwned integration to proactively protect user accounts."
+  - company: "Senior Backend Engineer · Acme Health (USA) — Remote / Contract"
+    period: "Jan 2024 – Present"
+    highlight: "Introduced 2FA (Email/TOTP/FIDO) and breach-detection integration to proactively protect user accounts."
     bullets:
-      - "Evaluated and prototyped LLM-assisted triage tooling for internal support workflows"
-      - "Maintaining codebase and developing new JSON:API endpoints for healthcare products."
+      - "Maintaining codebase and developing new JSON:API endpoints for healthcare SaaS products."
       - "Built modern search infrastructure using OpenSearch/Elasticsearch."
       - "Actively contributing to Security & Architecture reviews, surfacing and resolving systemic issues."
-      - "Profiling and optimising slow API endpoints using Grafana; partnering daily with FE and QA teams."
+      - "Profiling and optimising slow API endpoints; partnering daily with FE and QA teams."
 
-  - company: "Senior Engineer · Total Ticketing (Hong Kong) — Remote / Contract"
-    period: "Apr 2023 – Mar 2025"
-    highlight: "Reduced Export document generation from 6+ hours → 2 minutes via targeted refactoring."
+  - company: "Senior Engineer · GlobalTickets Ltd (Remote / Contract)"
+    period: "Jan 2022 – Dec 2023"
+    highlight: "Reduced export document generation from 6+ hours → 2 minutes via targeted refactoring."
     bullets:
-      - "Developed and deployed scalable backend systems for one of China & HK's largest B2B ticketing platforms."
+      - "Developed and deployed scalable backend systems for a large B2B ticketing platform."
       - "Integrated client-specific features into an established multi-tenant SaaS platform."
       - "Worked in a distributed, multi-national Agile team."
-      - "Stack: Python 2.7, Django 1.11, AWS, Kubernetes, Docker."
+      - "Stack: Python, Django, AWS, Kubernetes, Docker."
 
-  - company: "Team Lead & Senior Engineer · Zonnepanelendelen BV (Netherlands)"
-    period: "Sep 2021 – Feb 2023"
+  - company: "Team Lead & Senior Engineer · GreenEnergy BV"
+    period: "Jun 2020 – Dec 2021"
     highlight: "Redesigned KYC pipeline — investor ID verification time cut from ~28 days to ~7 days."
     bullets:
-      - "Core engineer on Investment & Payments flow for a Dutch solar-energy crowdfunding platform."
+      - "Core engineer on Investment & Payments flow for a crowdfunding platform."
       - "Led a team of 5 engineers, reporting KPIs directly to the CTO."
-      - "Implemented zero-downtime PSP migration (Buckaroo → MangoPay) for a live, revenue-critical system."
+      - "Implemented zero-downtime PSP migration for a live, revenue-critical system."
       - "Stack: Python, Django REST Framework, Angular, PostgreSQL, AWS."
 
-  - company: "Python Backend Developer · Ultimaker BV (Netherlands)"
-    period: "Nov 2019 – Sep 2021"
-    highlight: ~   # set to ~ (null) if no highlight
-    bullets:
-      - "Built REST API micro-services (Python/Tornado) consumed by React frontend, Cura, and third-party apps."
-      - "Maintained 100% test coverage with a strict TDD approach using pytest."
-
-  - company: "Python Backend Developer · VirtualStock UK"
-    period: "Mar 2017 – Nov 2019"
+  - company: "Python Backend Developer · Hardware Co"
+    period: "Jan 2018 – May 2020"
     highlight: ~
     bullets:
-      - "Worked on a large Django monolith acting as a B2B middleware between UK retailers and suppliers."
-      - "Handled client integrations for Tesco, John Lewis, Aldi and others in a 50+-person international team."
+      - "Built REST API micro-services consumed by a React frontend and third-party integrations."
+      - "Maintained 100% test coverage with a strict TDD approach using pytest."
+      - "Used MongoDB (NoSQL); operated in an international Scrum team."
+
+  - company: "Python Backend Developer · RetailTech UK"
+    period: "Mar 2016 – Dec 2017"
+    highlight: ~
+    bullets:
+      - "Worked on a large Django monolith acting as a B2B middleware between retailers and suppliers."
+      - "Handled client integrations in a 50+-person international team."
+      - "Stack: Python, Django, PostgreSQL, Celery, RabbitMQ."
 
 skills:
   - label: Languages
-    value: Python (async), SQL, JavaScript
+    value: Python (primary), SQL, JavaScript
   - label: Frameworks
-    value: Django, Django REST Framework, Flask, FastAPI
+    value: Django, Django REST Framework, Flask, Tornado
   - label: Infrastructure
     value: AWS (EC2, S3, RDS), Docker, Kubernetes, CI/CD
   - label: Search
@@ -73,8 +75,11 @@ skills:
   - label: Databases
     value: PostgreSQL, MongoDB, MySQL, SQLite
   - label: Security
-    value: "2FA (TOTP/FIDO), HaveIBeenPwned, KYC/AML flows"
-  - label: Tools
-    value: uv, ruff, pre-commit, DataDog, Sentry, Grafana
+    value: "2FA (TOTP/FIDO), breach detection, KYC/AML flows"
   - label: Other
-    value: Web scraping/crawling, Celery, RabbitMQ, TDD/pytest
+    value: Celery, RabbitMQ, Grafana, TDD/pytest, web scraping
+
+education:
+  - degree: Bachelor of Computer Science
+    institution: State University, City, Country
+    detail: "OOP · Databases · Web Development · Computer Networking · Algorithms"
