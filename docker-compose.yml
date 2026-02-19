@@ -1,0 +1,14 @@
+services:
+  cv-builder:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount your data file and static folder so edits take effect
+      # without rebuilding the image
+      - ./cv_data.yaml:/app/cv_data.yaml
+      - ./static:/app/static
+    environment:
+      - FLASK_ENV=development
+      - PORT=5000
+    restart: unless-stopped

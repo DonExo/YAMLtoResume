@@ -1,0 +1,81 @@
+# ─────────────────────────────────────────────
+#  CV DATA SAMPLE — edit directly, then click "Download PDF" 
+# ─────────────────────────────────────────────
+
+meta:
+  pdf_title: Donald Trump President
+  output_filename: Donald_Trump_CV.pdf
+
+header:
+  name: Donald Trump
+  role: Senior Backend Engineer · Python · Remote
+  photo: static/trump.png
+  contact_line1: "✉ jane@example.com  ·  ✆ (+1) 234 567 890  ·  ⚑ San Francisco, USA"
+  contact_line2: "in linkedin.com/in/janedoe  ·  ⌥ github.com/janedoe"
+
+profile: >
+  Backend-focused senior engineer with 8+ years of experience building scalable Python/Django
+  systems. Known for tackling complex architecture challenges, measurable performance improvements,
+  and leading cross-functional teams. Combines a security-first mindset with a pragmatic,
+  business-oriented approach.
+
+experience:
+  - company: "Second time president of the United States of America"
+    period: "Jan 2024 – Present"
+    highlight: "Introduced 2FA (Email/TOTP/FIDO) and breach-detection integration to proactively protect user accounts."
+    bullets:
+      - "Maintaining codebase and developing new JSON:API endpoints for healthcare SaaS products."
+      - "Built modern search infrastructure using OpenSearch/Elasticsearch."
+      - "Actively contributing to Security & Architecture reviews, surfacing and resolving systemic issues."
+      - "Profiling and optimising slow API endpoints; partnering daily with FE and QA teams."
+
+  - company: "Senior Engineer · GlobalTickets Ltd (Remote / Contract)"
+    period: "Jan 2022 – Dec 2023"
+    highlight: "Reduced export document generation from 6+ hours → 2 minutes via targeted refactoring."
+    bullets:
+      - "Developed and deployed scalable backend systems for a large B2B ticketing platform."
+      - "Integrated client-specific features into an established multi-tenant SaaS platform."
+      - "Worked in a distributed, multi-national Agile team."
+      - "Stack: Python, Django, AWS, Kubernetes, Docker."
+
+  - company: "Team Lead & Senior Engineer · GreenEnergy BV"
+    period: "Jun 2020 – Dec 2021"
+    highlight: "Redesigned KYC pipeline — investor ID verification time cut from ~28 days to ~7 days."
+    bullets:
+      - "Core engineer on Investment & Payments flow for a crowdfunding platform."
+      - "Led a team of 5 engineers, reporting KPIs directly to the CTO."
+      - "Implemented zero-downtime PSP migration for a live, revenue-critical system."
+      - "Stack: Python, Django REST Framework, Angular, PostgreSQL, AWS."
+
+  - company: "Python Backend Developer · Hardware Co"
+    period: "Jan 2018 – May 2020"
+    highlight: ~
+    bullets:
+      - "Built REST API micro-services consumed by a React frontend and third-party integrations."
+      - "Maintained 100% test coverage with a strict TDD approach using pytest."
+      - "Used MongoDB (NoSQL); operated in an international Scrum team."
+
+  - company: "Python Backend Developer · RetailTech UK"
+    period: "Mar 2016 – Dec 2017"
+    highlight: ~
+    bullets:
+      - "Worked on a large Django monolith acting as a B2B middleware between retailers and suppliers."
+      - "Handled client integrations in a 50+-person international team."
+      - "Stack: Python, Django, PostgreSQL, Celery, RabbitMQ."
+
+skills:
+  - label: Languages
+    value: Python (primary), SQL, JavaScript
+  - label: Frameworks
+    value: Django, Django REST Framework, Flask, Tornado
+  - label: Infrastructure
+    value: AWS (EC2, S3, RDS), Docker, Kubernetes, CI/CD
+  - label: Databases
+    value: PostgreSQL, MongoDB, MySQL, SQLite
+  - label: Other
+    value: Celery, RabbitMQ, Grafana, TDD/pytest, web scraping
+
+education:
+  - degree: Bachelor of Computer Science
+    institution: State University, City, Country
+    detail: "OOP · Databases · Web Development · Computer Networking · Algorithms"
