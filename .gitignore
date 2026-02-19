@@ -1,0 +1,4 @@
+.DS_Store
+.venv/
+__pycache__/
+cv_data_donald.yaml

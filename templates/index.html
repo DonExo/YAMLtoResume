@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0f1117;
+    --surface:  #181c27;
+    --border:   #262d3d;
+    --accent:   #2563EB;
+    --accent2:  #38bdf8;
+    --success:  #22c55e;
+    --warn:     #f59e0b;
+    --error:    #ef4444;
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Layout ────────────────────────────────────────────────── */
+  .shell {
+    display: grid;
+    grid-template-rows: 52px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Topbar ────────────────────────────────────────────────── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
+  .topbar-logo {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--accent2);
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+  .topbar-logo span { color: var(--muted); }
+  .topbar-spacer { flex: 1; }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .status-pill.ok     { color: var(--success); border-color: #16a34a55; background: #16a34a0d; }
+  .status-pill.error  { color: var(--error);   border-color: #ef444455; background: #ef44440d; }
+  .status-pill.saving { color: var(--warn);    border-color: #f59e0b55; background: #f59e0b0d; }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: #3f4f6a; background: #1e2534; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+  .btn-primary.loading { position: relative; color: transparent; }
+  .btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    border: 2px solid #ffffff44;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Main area ──────────────────────────────────────────────── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    overflow: hidden;
+  }
+
+  /* ── Editor pane ────────────────────────────────────────────── */
+  .editor-pane {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+  }
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .editor-toolbar strong { color: var(--text); font-weight: 500; margin-right: 4px; }
+  .editor-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  textarea {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    padding: 20px 24px;
+    border: none;
+    outline: none;
+    resize: none;
+    tab-size: 2;
+    caret-color: var(--accent2);
+  }
+  textarea::selection { background: #2563eb44; }
+
+  /* ── Sidebar ────────────────────────────────────────────────── */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    background: var(--surface);
+    padding: 16px;
+  }
+  .sidebar-section {
+    margin-bottom: 20px;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Generate card ──────────────────────────────────────────── */
+  .generate-card {
+    background: linear-gradient(135deg, #1e293b 0%, #162032 100%);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .generate-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .generate-card p {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .generate-card .btn { width: 100%; justify-content: center; }
+
+  /* ── Shortcuts ──────────────────────────────────────────────── */
+  .shortcut-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid #1a2030;
+  }
+  .shortcut-row:last-child { border-bottom: none; }
+  .shortcut-row span { color: var(--text); font-size: 11.5px; }
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    background: #0f1521;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--text);
+  }
+
+  /* ── Structure reference ────────────────────────────────────── */
+  .ref-block {
+    background: #0f1521;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    line-height: 1.7;
+    color: #94a3b8;
+    overflow-x: auto;
+  }
+  .ref-block .k  { color: #38bdf8; }
+  .ref-block .v  { color: #86efac; }
+  .ref-block .c  { color: #475569; font-style: italic; }
+
+  /* ── Toast ──────────────────────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 30px #00000066;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s ease;
+    pointer-events: none;
+    z-index: 999;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { background: #14532d; color: #86efac; border: 1px solid #16a34a55; }
+  #toast.error   { background: #450a0a; color: #fca5a5; border: 1px solid #ef444455; }
+  #toast.info    { background: #1e3a5f; color: #93c5fd; border: 1px solid #2563eb55; }
+
+  /* ── Error banner ───────────────────────────────────────────── */
+  #error-banner {
+    display: none;
+    padding: 8px 16px;
+    background: #450a0a;
+    border-top: 1px solid #ef444433;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #fca5a5;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    max-height: 100px;
+    overflow-y: auto;
+  }
+  #error-banner.visible { display: block; }
+
+  /* ── Scrollbar ──────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3f4f6a; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-logo">cv-builder <span>/</span> yaml</div>
+    <div class="topbar-spacer"></div>
+    <div class="status-pill" id="status-pill">
+      <div class="status-dot"></div>
+      <span id="status-text">ready</span>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Editor -->
+    <div class="editor-pane">
+      <div class="editor-toolbar">
+        <strong>cv_data.yaml</strong>
+        — edit directly, then hit "Download PDF"
+      </div>
+      <div class="editor-wrap">
+        <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+      </div>
+      <div id="error-banner"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="generate-card">
+        <h3>Generate PDF</h3>
+        <p>Saves your changes and renders the CV. The file downloads automatically.</p>
+        <button class="btn btn-primary" id="btn-generate">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 15V3m0 12-4-4m4 4 4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/></svg>
+          Download PDF
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Keyboard shortcuts</div>
+        <div class="shortcut-row">
+          <span>Save</span>  
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd>
+              <kbd>S</kbd>
+            </div>
+        </div>
+        <div class="shortcut-row">
+          <span>Generate PDF</span> 
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd>
+              <kbd>⏎</kbd>
+            </div>
+        </div>
+        <div class="shortcut-row">
+          <span>Validate YAML</span> 
+            <div class="shortcut-keys">
+              <kbd>⌘</kbd>
+              <kbd>K</kbd>
+            </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const editor    = document.getElementById('editor');
+  const btnGen    = document.getElementById('btn-generate');
+  const statusPill= document.getElementById('status-pill');
+  const statusTxt = document.getElementById('status-text');
+  const errBanner = document.getElementById('error-banner');
+  const toast     = document.getElementById('toast');
+
+  let saveTimer   = null;
+  let isDirty     = false;
+
+  // ── Toast helper ──────────────────────────────────────────────
+  function showToast(msg, type = 'info', duration = 2800) {
+    toast.textContent = msg;
+    toast.className = `show ${type}`;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.className = ''; }, duration);
+  }
+
+  // ── Status pill ───────────────────────────────────────────────
+  function setStatus(state, msg) {
+    statusPill.className = `status-pill ${state}`;
+    statusTxt.textContent = msg;
+  }
+
+  // ── Error banner ──────────────────────────────────────────────
+  function showError(msg) {
+    errBanner.textContent = msg;
+    errBanner.classList.add('visible');
+    setStatus('error', 'yaml error');
+  }
+  function clearError() {
+    errBanner.classList.remove('visible');
+  }
+
+  // ── Load data on startup ──────────────────────────────────────
+  async function loadData() {
+    try {
+      const res  = await fetch('/data');
+      const json = await res.json();
+      editor.value = json.yaml;
+      setStatus('ok', 'loaded');
+    } catch (e) {
+      showToast('Failed to load cv_data.yaml', 'error');
+    }
+  }
+
+  // ── Validate ──────────────────────────────────────────────────
+  async function validate(yaml) {
+    const res  = await fetch('/validate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({yaml}),
+    });
+    return res.json();
+  }
+
+  // ── Auto-validate while typing ────────────────────────────────
+  editor.addEventListener('input', () => {
+    isDirty = true;
+    setStatus('saving', 'unsaved');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(autoSave, 1200);
+  });
+
+  async function autoSave() {
+    const yaml = editor.value;
+    const v = await validate(yaml);
+    if (!v.ok) {
+      showError(v.error);
+      return;
+    }
+    clearError();
+    const res  = await fetch('/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({yaml}),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      isDirty = false;
+      setStatus('ok', 'saved');
+    } else {
+      showError(json.error);
+    }
+  }
+
+  // ── Generate PDF ──────────────────────────────────────────────
+  async function generatePDF() {
+    const yaml = editor.value;
+
+    // validate first
+    const v = await validate(yaml);
+    if (!v.ok) {
+      showError(v.error);
+      showToast('Fix YAML errors before generating', 'error');
+      return;
+    }
+    clearError();
+
+    btnGen.classList.add('loading');
+    btnGen.disabled = true;
+    setStatus('saving', 'generating…');
+
+    try {
+      const res = await fetch('/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({yaml}),
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        showError(json.error);
+        showToast('PDF generation failed', 'error');
+        setStatus('error', 'failed');
+        return;
+      }
+
+      // trigger download
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      const cd   = res.headers.get('Content-Disposition') || '';
+      const match= cd.match(/filename="?([^"]+)"?/);
+      a.download = match ? match[1] : 'cv.pdf';
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      setStatus('ok', 'pdf ready');
+      showToast('PDF downloaded ✓', 'success');
+    } catch (e) {
+      showError(String(e));
+      showToast('Network error', 'error');
+      setStatus('error', 'error');
+    } finally {
+      btnGen.classList.remove('loading');
+      btnGen.disabled = false;
+    }
+  }
+
+  btnGen.addEventListener('click', generatePDF);
+
+  // ── Keyboard shortcuts ────────────────────────────────────────
+  document.addEventListener('keydown', async (e) => {
+    const mod = e.metaKey || e.ctrlKey;
+    if (mod && e.key === 's')      { e.preventDefault(); autoSave(); }
+    if (mod && e.key === 'Enter')  { e.preventDefault(); generatePDF(); }
+    if (mod && e.key === 'k')      {
+      e.preventDefault();
+      const v = await validate(editor.value);
+      if (v.ok) { clearError(); showToast('YAML is valid ✓', 'success'); setStatus('ok', 'valid'); }
+      else      { showError(v.error); showToast('YAML has errors', 'error'); }
+    }
+  });
+
+  // ── Tab key support ───────────────────────────────────────────
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = editor.selectionStart;
+      const v = editor.value;
+      editor.value = v.slice(0, s) + '  ' + v.slice(editor.selectionEnd);
+      editor.selectionStart = editor.selectionEnd = s + 2;
+    }
+  });
+
+  // ── Init ──────────────────────────────────────────────────────
+  loadData();
+</script>
+</body>
+</html>
