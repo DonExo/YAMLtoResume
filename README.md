@@ -5,6 +5,10 @@ Edit your data in YAML, click **Download PDF** — done.
 
 ---
 
+## Screenshots
+![Editor look](static/editorlook.png)
+![Output CV](static/outputcv.png)
+
 ## Project structure
 
 ```
@@ -134,18 +138,6 @@ education:
 - The image is automatically **centre-cropped to a circle** regardless of its original shape or aspect ratio
 - If the file is missing or `photo:` is omitted, `static/default.png` is used as a fallback
 - If `default.png` is also absent, the header falls back to a clean centred text-only layout
-
-### Unicode symbols in contact lines
-
-The contact lines use **DejaVu Sans** (bundled in the Docker image and available by default on Linux/Mac) to render Unicode symbols. Recommended picks:
-
-| Symbol | Use for |
-|--------|---------|
-| `✉` | Email |
-| `✆` | Phone |
-| `⚑` | Location |
-| `in` | LinkedIn (plain text) |
-| `⌥` | GitHub |
 
 ---
 

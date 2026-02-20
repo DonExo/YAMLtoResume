@@ -3,13 +3,13 @@
 # ─────────────────────────────────────────────
 
 meta:
-  pdf_title: Jane Doe CV
-  output_filename: Jane_Doe_CV.pdf
+  pdf_title: Donald Trump President
+  output_filename: Donald_Trump_CV.pdf
 
 header:
-  name: Jane Doe
+  name: Donald Trump
   role: Senior Backend Engineer · Python · Remote
-  photo: static/default.png
+  photo: static/trump.png
   contact_line1: "✉ jane@example.com  ·  ✆ (+1) 234 567 890  ·  ⚑ San Francisco, USA"
   contact_line2: "in linkedin.com/in/janedoe  ·  ⌥ github.com/janedoe"
 
@@ -20,7 +20,7 @@ profile: >
   business-oriented approach.
 
 experience:
-  - company: "Senior Backend Engineer · Acme Health (USA) — Remote / Contract"
+  - company: "Second time president of the United States of America"
     period: "Jan 2024 – Present"
     highlight: "Introduced 2FA (Email/TOTP/FIDO) and breach-detection integration to proactively protect user accounts."
     bullets:
@@ -70,12 +70,8 @@ skills:
     value: Django, Django REST Framework, Flask, Tornado
   - label: Infrastructure
     value: AWS (EC2, S3, RDS), Docker, Kubernetes, CI/CD
-  - label: Search
-    value: Elasticsearch / OpenSearch
   - label: Databases
     value: PostgreSQL, MongoDB, MySQL, SQLite
-  - label: Security
-    value: "2FA (TOTP/FIDO), breach detection, KYC/AML flows"
   - label: Other
     value: Celery, RabbitMQ, Grafana, TDD/pytest, web scraping
 
