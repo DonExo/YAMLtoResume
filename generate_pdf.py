@@ -250,6 +250,11 @@ def generate(data: dict) -> bytes:
             ))
             if edu.get("detail"):
                 story.append(Paragraph(edu["detail"], STYLES["edu_sub"]))
+    
+    # ── Need to add extra information?
+    # -- Just add new category here (i.e. 'certificates') similar as for Education ──
+    # -- and add it in cv_data.yaml data document.
+
 
     doc.build(story)
     return buf.getvalue()
